@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Escena Nocturna Decorada</title>
+<style>
+  body {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    background: radial-gradient(ellipse at bottom, #0b0c33 0%, #000000 100%);
+    overflow: hidden;
+    font-family: Arial, sans-serif;
+  }
+
+  .moon {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 350px;
+    height: 350px;
+    background: radial-gradient(circle at 25% 25%, #fff, #ddd 60%, #aaa 100%);
+    border-radius: 50%;
+    box-shadow: 0 0 100px 40px rgba(255, 255, 255, 0.5);
+  }
+
+  .message {
+    position: absolute;
+    top: calc(10% + 300px + 130px); /* misma altura que el emoji */
+    left: 180px; /* al lado derecho del emoji 💕 */
+    color: white;
+    font-size: 2em;
+    text-align: left;
+    opacity: 1;
+    transition: opacity 1s ease-in-out;
+  }
+
+  .moon-message {
+    position: absolute;
+    top: 420px; /* bajamos más la frase debajo de la luna */
+    right: 20px; /* alineado con el borde derecho de la luna */
+    width: 350px; /* mismo ancho que la luna */
+    font-size: 22px; /* letras un poco más grandes */
+    font-weight: bold;
+    color: #ffddff;
+    text-align: center;
+    line-height: 1.3;
+    opacity: 1;
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.7);
+  }
+
+  .carrusel {
+    position: absolute;
+    left: 80px;
+    top: 10%;
+    transform: translateY(-50%);
+    z-index: 1;
+  }
+
+  .carrusel img {
+    width: 300px;
+    border-radius: 20px;
+    box-shadow: 0 0 20px white;
+    position: absolute;
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
+    padding: 10px;
+    border: 3px solid transparent;
+  }
+
+  .carrusel img.active {
+    opacity: 1;
+  }
+
+  .love-text {
+    position: absolute;
+    left: 80px;
+    top: calc(10% + 300px + 40px);
+    font-size: 32px;
+    color: white;
+    font-weight: bold;
+    white-space: nowrap;
+    opacity: 0;
+  }
+
+  .flower-line {
+    position: absolute;
+    left: 80px;
+    top: calc(10% + 300px + 80px);
+    display: flex;
+  }
+
+  .flower-line span {
+    font-size: 32px;
+    margin-right: 2px;
+    opacity: 0;
+  }
+
+  #musicButton {
+    position: absolute;
+    top: calc(10% + 300px + 130px);
+    left: 80px;
+    font-size: 80px;
+    cursor: pointer;
+    user-select: none;
+    transition: transform 0.2s;
+  }
+
+  #musicButton:hover {
+    transform: scale(1.1);
+  }
+
+  .star {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: white;
+    border-radius: 50%;
+    animation: twinkle 2s infinite alternate;
+  }
+
+  @keyframes twinkle {
+    from { opacity: 0.2; }
+    to { opacity: 1; }
+  }
+
+  .shooting-star {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: white;
+    border-radius: 50%;
+    opacity: 0;
+    box-shadow: 0 0 10px 2px white;
+  }
+
+  @keyframes shooting {
+    0% { transform: translate(0,0) rotate(45deg); opacity: 1; }
+    100% { transform: translate(500px,500px) rotate(45deg); opacity: 0; }
+  }
+
+  /* LETRAS SINCRONIZADAS */
+  .lyrics {
+    position: absolute;
+    top: 30%;
+    left: 420px;
+    width: 400px;
+    min-height: 60px;
+    max-height: 200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    color: #f5e6ff;
+    font-family: Georgia, serif;
+    font-style: italic;
+    font-size: 36px;
+    line-height: 1.2;
+    text-shadow: 0 0 5px rgba(200, 150, 255, 0.8);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    overflow: visible;
+    z-index: 10;
+  }
+
+  .line {
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+    width: 100%;
+  }
+
+  .line.show {
+    opacity: 1;
+  }
+</style>
+</head>
+<body>
+
+<div class="moon"></div>
+<div class="message" id="message">TE AMO MICH💞</div>
+
+<!-- Frase agregada debajo de la luna con tamaño y posición ajustados -->
+<div class="moon-message" id="moonMessage">
+💫Te quiero mucho, Michell. Eres la persona que alegra mis días; déjame seguir amándote y déjame hacerte más feliz🫀
+</div>
+
+<div class="carrusel">
+  <img src="mich.1.jpeg" alt="foto 1" class="active">
+  <img src="mich.2.jpeg" alt="foto 2">
+  <img src="mich.3.jpeg" alt="foto 3">
+  <img src="mich.4.jpeg" alt="foto 4">
+</div>
+
+<div class="love-text" id="loveText"></div>
+
+<div class="flower-line" id="flowerLine">
+  <span>🌷</span><span>🌷</span><span>🌷</span><span>🌷</span><span>🌷</span>
+  <span>🌷</span><span>🌷</span><span>🌷</span><span>🌷</span><span>🌷</span>
+</div>
+
+<div id="musicButton">💕</div>
+
+<audio id="music" loop>
+  <source src="michell.mpeg" type="audio/mpeg">
+</audio>
+
+<div class="lyrics" id="lyrics"></div>
+
+<script>
+  // Frases debajo de la luna
+  const messages = ["TE AMO MICH💞","MI NIÑA HERMOSA💓","RATITA🪤","MI LOBITA🐺"];
+  let currentMessage = 0;
+  const messageElement = document.getElementById('message');
+  setInterval(() => {
+    messageElement.style.opacity = 0;
+    setTimeout(() => {
+      currentMessage = (currentMessage + 1) % messages.length;
+      messageElement.textContent = messages[currentMessage];
+      messageElement.style.opacity = 1;
+    }, 1000);
+  }, 3000);
+
+  // Carrusel
+  const images = document.querySelectorAll(".carrusel img");
+  let currentImg = 0;
+  setInterval(() => {
+    images[currentImg].classList.remove("active");
+    currentImg = (currentImg + 1) % images.length;
+    images[currentImg].classList.add("active");
+  }, 2000);
+
+  // Botón música
+  const music = document.getElementById('music');
+  const musicButton = document.getElementById('musicButton');
+  musicButton.addEventListener('click', () => {
+    if(music.paused){ 
+      music.play(); 
+      startLyricsLoop(); 
+    } else { 
+      music.pause(); 
+    }
+  });
+
+  // Texto progresivo
+  const loveText = document.getElementById('loveText');
+  const fullText = "✨TE AMO MUCHO MI NIÑA✨";
+  let index = 0;
+  function typeText() {
+    if(index < fullText.length){
+      loveText.textContent += fullText[index];
+      loveText.style.opacity = 1;
+      index++;
+      setTimeout(typeText, 100);
+    }
+  }
+  typeText();
+
+  // Flores animadas
+  const flowerSpans = document.querySelectorAll("#flowerLine span");
+  flowerSpans.forEach((span, i) => { setTimeout(()=>{ span.style.opacity=1; }, i*200); });
+
+  // Estrellas
+  const starCount = 150;
+  for(let i=0;i<starCount;i++){
+    const star = document.createElement('div');
+    star.classList.add('star');
+    let top, left;
+    do { top=Math.random()*window.innerHeight; left=Math.random()*window.innerWidth; }
+    while(top>window.innerHeight*0.1 && top<window.innerHeight*0.55 && left>80 && left<380);
+    star.style.top = top+'px'; star.style.left=left+'px';
+    star.style.width = Math.random()*3+1+'px'; star.style.height=star.style.width;
+    document.body.appendChild(star);
+  }
+
+  // Estrellas fugaces
+  function createShootingStar() {
+    const star=document.createElement('div');
+    star.classList.add('shooting-star');
+    let top, left;
+    do{ top=Math.random()*window.innerHeight; left=Math.random()*window.innerWidth; }
+    while(top>window.innerHeight*0.1 && top<window.innerHeight*0.55 && left>80 && left<380);
+    star.style.top=top+'px'; star.style.left=left+'px';
+    star.style.animation=`shooting ${Math.random()*1+0.8}s linear forwards`;
+    document.body.appendChild(star);
+    setTimeout(()=>{ star.remove(); },1500);
+  }
+  setInterval(createShootingStar,700+Math.random()*300);
+
+  // LETRAS SINCRONIZADAS
+  const lyricsData = [
+    {time:7,text:"wise man Say"},
+    {time:14,text:"only fools rush in"},
+    {time:21,text:"but i can't help falling in love with you?"},
+    {time:36,text:"shall I stay?"},
+    {time:42,text:"would it be a sin"},
+    {time:50,text:"if I can't help falling in love with you?"},
+    {time:64,text:"like a river flows"},
+    {time:67,text:"surely to the sea"},
+    {time:71,text:"darling, so it goes"},
+    {time:75,text:"some things are meant to be"},
+    {time:82,text:"take my hand"},
+    {time:88,text:"take my whole life too"},
+    {time:96,text:"for i can't help falling in love with you"},
+    {time:110,text:"like a river flows"},
+    {time:113,text:"surely to the sea"},
+    {time:117,text:"darling, so it goes"},
+    {time:120,text:"some things are meant to be"},
+    {time:128,text:"take my hand"},
+    {time:133,text:"take my whole life too"},
+    {time:142,text:"for I can't help falling in love with you"},
+    {time:155,text:"for I can't help falling in love with you"}
+  ];
+
+  const lyricsContainer = document.getElementById("lyrics");
+  let lyricsTimeouts = [];
+
+  function startLyricsLoop(){
+    lyricsContainer.innerHTML = "";
+    lyricsTimeouts.forEach(t=>clearTimeout(t));
+    lyricsTimeouts = [];
+    const currentTimeOffset = music.currentTime || 0;
+
+    lyricsData.forEach((current, i)=>{
+      const nextTime = (lyricsData[i+1]? lyricsData[i+1].time : current.time+5) - current.time;
+
+      const timeout1 = setTimeout(()=>{
+        if(!music.paused){
+          lyricsContainer.innerHTML = `<div class="line show">${current.text}</div>`;
+        }
+      }, (current.time - currentTimeOffset)*1000);
+
+      const timeout2 = setTimeout(()=>{
+        lyricsContainer.innerHTML = "";
+      }, (current.time - currentTimeOffset + nextTime - 0.5)*1000);
+
+      lyricsTimeouts.push(timeout1, timeout2);
+    });
+  }
+</script>
+</body>
+</html>
